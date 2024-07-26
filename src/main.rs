@@ -35,7 +35,7 @@ pub struct LagrangePolynomialGray<F: Field> {
 impl<F: Field> LagrangePolynomialGray<F> {
     pub fn new(point: &[F]) -> Self {
         let num_variables = point.len();
-        assert!(point.iter().all(|&p| p != F::ZERO && p != F::ONE));
+        //assert!(point.iter().all(|&p| p != F::ZERO && p != F::ONE));
 
         // This is negated[i] = eq_poly(z_i, 0) = 1 - z_i
         let negated_points: Vec<_> = point.iter().map(|z| F::ONE - z).collect();
@@ -152,6 +152,28 @@ mod tests {
     #[test]
     fn test_gray() {
         let point = vec![F::from(2), F::from(3), F::from(4)];
+
+        let eq_poly_res: BTreeSet<_> = (0..(1 << 3)).map(|b| (b, eq_poly(&point, b))).collect();
+
+        let gray_res: BTreeSet<_> = LagrangePolynomialGray::new(&point).collect();
+
+        assert_eq!(eq_poly_res, gray_res);
+    }
+
+    #[test]
+    fn test_gray_2() {
+        let point = vec![F::from(0), F::from(3), F::from(4)];
+
+        let eq_poly_res: BTreeSet<_> = (0..(1 << 3)).map(|b| (b, eq_poly(&point, b))).collect();
+
+        let gray_res: BTreeSet<_> = LagrangePolynomialGray::new(&point).collect();
+
+        assert_eq!(eq_poly_res, gray_res);
+    }
+
+    #[test]
+    fn test_gray_3() {
+        let point = vec![F::from(2), F::from(1), F::from(4)];
 
         let eq_poly_res: BTreeSet<_> = (0..(1 << 3)).map(|b| (b, eq_poly(&point, b))).collect();
 
